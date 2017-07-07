@@ -118,7 +118,7 @@ public class SiranapPOST {
                 xmlStr = xmlStr + "</data>\n";
             }
             xmlStr = xmlStr + "</xml>\n";
-            StringRequestEntity params = new StringRequestEntity(xmlStr);
+            StringRequestEntity params = new StringRequestEntity(xmlStr, "application/xml", "ISO-8859-1");
             System.out.println(xmlStr);
             //request create
            post.setRequestEntity(params);
