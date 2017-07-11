@@ -30,7 +30,7 @@ public class SiranapPOST {
     /**
      * @param args the command line arguments
      */
-    //Database credential - MySQL
+    //Database credential
     private static final String MysqlUser = "yourDatabaseUsername";
     private static final String MysqlPass = "yourDatabasePassword";
     private static final String MysqlURL = "jdbc:mysql://yourIPServer:3306/siranap";
@@ -45,22 +45,6 @@ public class SiranapPOST {
     // constructor
     public SiranapPOST() {
         getMysqlConnection();
-    }
-
-    private static String generateMD5(String input) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(input.getBytes());
-            BigInteger number = new BigInteger(1, messageDigest);
-            String hashtext = number.toString(16);
-            // Now we need to zero pad it if you actually want the full 32 chars.
-            while (hashtext.length() < 32) {
-                hashtext = "0" + hashtext;
-            }
-            return hashtext;
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private Connection getMysqlConnection() {
@@ -79,8 +63,24 @@ public class SiranapPOST {
         return MysqlCon;
     }
 
-    private void sendData() {
-        String strSQL = "SELECT\n"
+    private static String generateMD5(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(input.getBytes());
+            BigInteger number = new BigInteger(1, messageDigest);
+            String hashtext = number.toString(16);
+            // Now we need to zero pad it if you actually want the full 32 chars.
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String sqlBedMonitoring() {
+        return "SELECT\n"
                 + "bed_monitoring.kode_ruang,\n"
                 + "bed_monitoring.tipe_pasien,\n"
                 + "bed_monitoring.total_TT,\n"
@@ -92,17 +92,16 @@ public class SiranapPOST {
                 + "bed_monitoring.tgl_update\n"
                 + "FROM\n"
                 + "bed_monitoring";
-        try {
-            PostMethod post = new PostMethod(strURLSiranap);
-            post.setRequestHeader("content-type", "application/xml; charset=ISO-8859-1");
-            post.setRequestHeader("X-rs-id", xrsid);
-            post.setRequestHeader("X-pass", generateMD5(xpass));
-            HttpClient httpClient = new HttpClient();
-            System.out.println("Password = " + xpass);
-            System.out.println("MD5 = " + generateMD5(xpass));
+    }
 
+    public static void main(String[] args) {
+        // TODO code application logic here
+        SiranapPOST siranapPost = new SiranapPOST();
+        try {
+        // Get a Resultset from SIMRS Database
             MysqlStmt = MysqlCon.createStatement();
-            ResultSet rs = MysqlStmt.executeQuery(strSQL);
+            ResultSet rs = MysqlStmt.executeQuery(siranapPost.sqlBedMonitoring());
+            // Format to XML
             String xmlStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xml>\n";
             while (rs.next()) {
                 xmlStr = xmlStr + "<data>\n";
@@ -119,9 +118,15 @@ public class SiranapPOST {
             }
             xmlStr = xmlStr + "</xml>\n";
             StringRequestEntity params = new StringRequestEntity(xmlStr, "application/xml", "ISO-8859-1");
-            System.out.println(xmlStr);
-            //request create
-           post.setRequestEntity(params);
+            // Declare a header
+            PostMethod post = new PostMethod(strURLSiranap);
+            post.setRequestHeader("content-type", "application/xml; charset=ISO-8859-1");
+            post.setRequestHeader("X-rs-id", xrsid);
+            post.setRequestHeader("X-pass", generateMD5(xpass));
+            HttpClient httpClient = new HttpClient();
+
+            //Post a data
+            post.setRequestEntity(params);
             int result = httpClient.executeMethod(post);
             System.out.println("Response status code: " + result);
             System.out.println("Response body: ");
@@ -131,11 +136,4 @@ public class SiranapPOST {
             Logger.getLogger(SiranapPOST.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    public static void main(String[] args) {
-        // TODO code application logic here
-        SiranapPOST siranapPost = new SiranapPOST();
-        siranapPost.sendData();
-    }
-
 }
