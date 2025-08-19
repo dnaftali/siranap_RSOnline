@@ -27,7 +27,7 @@ Aplikasi ini dirancang untuk:
 - Response JSON selalu ditampilkan untuk setiap operasi
 
 ### ✅ Tahap 3 - POST Data Tempat Tidur ke Kemenkes
-- Koneksi ke database Oracle menggunakan query dari context.txt
+- Koneksi ke database Oracle
 - Query data tempat tidur dari database
 - Convert data database ke format JSON API Kemenkes
 - Looping POST setiap data ke API Kemenkes
@@ -171,4 +171,5 @@ src/main/java/com/rsonline/
 - **Jackson**: JSON processing
 - **Oracle JDBC Driver**: Koneksi database Oracle
 - **SLF4J**: Logging framework
+
 
