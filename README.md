@@ -50,14 +50,14 @@ Aplikasi ini dirancang untuk:
 
 ### Credential API Kemenkes
 - Base URL: `https://sirs.kemkes.go.id/fo/index.php/`
-- X-rs-id: `3404015` (kode faskes)
-- X-pass: `S4rdj1t@!` (password bridging)
+- X-rs-id: `0000000` (kode faskes)
+- X-pass: `XxXxXxXxX` (password bridging)
 
-### Database Oracle
-- Host: `10.100.254.8:1521`
-- Database: `DBPROD`
-- User: `SIMRSLIVE`
-- Password: `Xk9ReNheBbTb7Nf5`
+### Database Oracle (atau sesuaikan dengan database yang digunakan)
+- Host: `localhost:1521`
+- Database: `SIMRS`
+- User: `xxxxx`
+- Password: `yyyyy`
 
 ## Cara Menjalankan
 
@@ -172,10 +172,3 @@ src/main/java/com/rsonline/
 - **Oracle JDBC Driver**: Koneksi database Oracle
 - **SLF4J**: Logging framework
 
-## Lisensi
-
-Project ini dibuat untuk keperluan internal rumah sakit.
-
-## Kontak
-
-Untuk pertanyaan atau support, silakan hubungi tim IT rumah sakit.
